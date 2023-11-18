@@ -93,13 +93,14 @@
             int Count = 0;
             string Temp = "";
             for (int i = 0; i < Oktestts.Length; i++)
+            {
                 for (int j = Count; j < InputIP.Length; j++)
                 {
                     if (InputIP[j] == '.')
                     {
                         if (int.TryParse(Temp, out Oktestts[i]))
                         {
-                            if (CheckOktett(Oktestts[i]))
+                            if (MethodenIPv4.CheckOktett(Oktestts[i]))
                                 return new Tuple<bool, int[]>(true, Oktestts);
                             else
                             {
@@ -109,11 +110,11 @@
                             }
                         }
                     }
-                    else if (j == 3)
+                    else if (i == 3 && Count == InputIP.Length - 1)
                     {
                         if (int.TryParse(Temp, out Oktestts[i]))
                         {
-                            if (CheckOktett(Oktestts[i]))
+                            if (MethodenIPv4.CheckOktett(Oktestts[i]))
                                 return new Tuple<bool, int[]>(true, Oktestts);
                             else
                             {
@@ -129,15 +130,10 @@
                         Count++;
                     }
                 }
+                if (Oktestts[0] == 0)
+                    return new Tuple<bool, int[]>(true, Oktestts);
+            }  
             return new Tuple<bool, int[]>(false, Oktestts);
-        }
-        public static bool CheckOktett(int Input)
-        {
-            //Checkt auf den richtigen Bereich der Adressierung
-            if (Input >= 0 && Input < 256)
-                return false;
-            else
-                return true;
         }
         static void ErrorInputIp()
         {

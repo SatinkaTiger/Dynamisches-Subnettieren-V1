@@ -1,20 +1,17 @@
 ﻿namespace Dynamisches_Subnettieren_V1.IPv4
 {
+    using Dynamisches_Subnettieren_V1.UserInterface;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Xml.Linq;
-    using Dynamisches_Subnettieren_V1.UserInterface;
 
     internal class DynamischIPv4
     {
         public static int[] NetAdress = new int[4];
         public static int Präfix;
-        public static List<Tuple<int[]>> SubNetAdress = new();
-        public static List<Tuple<int[]>> SubNetBrodcarst = new();
         public static List<Tuple<string, int>> SubNetNameAndHosts = new();
+        public static List<Tuple<int[], int[], int>> SubNetAdress = new();
+        static List<Tuple<int[], int>> SubNetAdressNextPräfix = new();
         public static void Start()
         {
             //Usereingabe
@@ -30,10 +27,16 @@
             }
             //Verarbeitung
             TempSubNetNameAndHosts = NetworksSort(TempSubNetNameAndHosts);
-            SubNetAdress.Add(new Tuple<int[]>(TempNetAdress));
             foreach (var Element in TempSubNetNameAndHosts)
-                SubNetAdress.Add(NetworkJump(Element, TempNetAdress));
+                SubNetAdressNextPräfix.Add(NetworkJump(Element, TempNetAdress));
             Präfix = TempPräfix;
+            for (int i = 0; i < SubNetAdressNextPräfix.Count; i++)
+            {
+                int[] NullNet = NetAdress;
+                if (i > 0)
+                    NullNet = SubNetAdressNextPräfix[i-1].Item1;
+
+            }
         }
         static List<Tuple<string, int>> NetworksSort(List<Tuple<string, int>> NetworkItem)
         {
@@ -55,22 +58,20 @@
             }
             return NetworkItem;
         }
-        static Tuple<int[]> NetworkJump(Tuple<string, int> NameHostFromNetwork, int[] NullNet)
+        static Tuple<int[], int> NetworkJump(Tuple<string, int> NameHostFromNetwork, int[] NullNet)
         {
             //Ermittelt das Neue Netzwerk und gibt es als Tuple zurück
-            int[] TempNet = new LinkedList<int>(NullNet).ToArray();
-            int[] NextNet = TempNet;
-            int TempPräfix = 32 - MethodenIPv4.GetBitToAdress(NameHostFromNetwork.Item2);
+            int[] NextNet = new LinkedList<int>(NullNet).ToArray();
+            int TempPräfix = 32 - MethodenIPv4.GetBitToAdress(NameHostFromNetwork.Item2 + 2);
             int TargetOktett = MethodenIPv4.GetTargetOktettAndBit(TempPräfix).Item1;
-            int TempOktett = NextNet[TargetOktett];
-            NextNet[TargetOktett] = MethodenIPv4.GiveValueOfBit(MethodenIPv4.GiveStartBitFromOktett(TempOktett), TempOktett) + 1;
-            if (UserInterfaceEingabe.CheckOktett(NextNet[TargetOktett]))
+            NextNet[TargetOktett] += MethodenIPv4.GiveValueOfBit(NameHostFromNetwork.Item2);
+            if (MethodenIPv4.CheckOktett(NextNet[TargetOktett]))
             {
                 NextNet[TargetOktett - 1] += 1;
                 NextNet[TargetOktett] = 0;
 
             }
-            return new Tuple<int[]>(NextNet);
+            return new Tuple<int[], int>(NextNet, TempPräfix);
         }
     }
 }

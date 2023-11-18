@@ -12,14 +12,13 @@
             {
                 case 1:
                     DynamischIPv4.Start();
-                    UserInterfaceAusgabe.StartDynamischIPv4(DynamischIPv4.SubNetAdress,DynamischIPv4.SubNetNameAndHosts);
                     break;
                 case 2:
                     Console.WriteLine("IPv6 nicht implementiert qwq");
                     Console.ReadLine();
                     break;
                 default:
-                    Console.WriteLine("Es ist ein unerwarteter Fehler aufgetreten");
+                    Console.WriteLine("Fehlerhafte Eingabe\n\nWeiter mit beliebiger Taste");
                     Console.ReadLine();
                     break;
             }

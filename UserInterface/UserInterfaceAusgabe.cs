@@ -9,9 +9,6 @@
 
     internal class UserInterfaceAusgabe
     {
-        public static void StartDynamischIPv4(List<Tuple<int[]>> SubnetsIPv4, List<Tuple<string, int>> SubNetNameHost)
-        {
 
-        }
     }
 }

@@ -2,9 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     internal class MethodenIPv4
     {
@@ -20,13 +17,21 @@
             1,
             0,
         };
+        public static bool CheckOktett(int Input)
+        {
+            //Checkt auf den richtigen Bereich der Adressierung
+            if (Input >= 0 && Input < 256)
+                return false;
+            else
+                return true;
+        }
         public static int GetBitToAdress(int Hosts)
         {
             //Ermittelt die Betötigten Bits anhand der angegebenen Hostanzahl
             int Count = 1;
             while (true)
             {
-                if (Math.Pow(2, Count) < Hosts + 2)
+                if (Math.Pow(2, Count) < Hosts)
                     Count++;
                 else
                     return Count;
@@ -36,17 +41,14 @@
         {
             //Bestimmt das Oktett, welches Netz-/Host-Adresse trennt
             decimal Temp = TempPräfix / 8;
-            if (TempPräfix % 8 > 0)
+            if (TempPräfix % 8 == 0)
                 Temp++;
             return new Tuple<int, int>((int)Math.Floor(Temp), TempPräfix % 8);
         }
-        public static int GiveValueOfBit( int StartBit,int SetValue)
+        public static int GiveValueOfBit(int Host)
         {
             //Berechnen der Adresse im Oktett durch gesetzte Bits
-            int Value = SetValue;
-                for (int i = StartBit; i < Bits.Length; i++)
-                    Value += Bits[i];
-            return Value;
+            return (int)Math.Pow(2, GetBitToAdress(Host));
         }
         public static int GiveStartBitFromOktett(int Oktett)
         {
@@ -55,7 +57,7 @@
             int count = 0;
             for (int i = 0; i < Bits.Length; i++)
             {
-                if (Value <= 0)
+                if (Value <=0)
                     break;
                 Value -= Bits[i];
                 count++;
@@ -73,6 +75,31 @@
                     TempString += ".";
             }
             return TempString;
+        }
+        public static List<Tuple<int[]>> GetBrodcast(List<Tuple<int[]>> NetAdress, List<Tuple<string, int>> NameHostFromNetwok)
+        {
+            List<Tuple<int[]>> Output = new List<Tuple<int[]>>();
+            int[] Brodcast = new int[4];
+            for (int i = 0; i < NameHostFromNetwok.Count; i++)
+            {
+                int[] NextNetwork = NetAdress[i + 1].Item1;
+                bool TakeBit = true;
+                for (int j = 0; j < NextNetwork.Length; j++)
+                {
+                    if (NextNetwork[j] == NetAdress[i].Item1[j])
+                        Brodcast[j] = NextNetwork[j];
+                    else if (NextNetwork[j] > NetAdress[i].Item1[j] && TakeBit)
+                    {
+                        TakeBit = false;
+                        Brodcast[j] = NextNetwork[j] - 1;
+                    }
+
+                    else
+                        Brodcast[j] = 255;
+                }
+                Output.Add(new Tuple<int[]>(Brodcast));
+            }
+            return Output;
         }
     }
 }
