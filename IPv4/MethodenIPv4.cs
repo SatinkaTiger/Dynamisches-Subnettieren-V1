@@ -1,7 +1,9 @@
 ﻿namespace Dynamisches_Subnettieren_V1.IPv4
 {
+    using Dynamisches_Subnettieren_V1.UserInterface;
     using System;
     using System.Collections.Generic;
+    using System.Net.Http.Headers;
 
     internal class MethodenIPv4
     {
@@ -41,8 +43,6 @@
         {
             //Bestimmt das Oktett, welches Netz-/Host-Adresse trennt
             decimal Temp = TempPräfix / 8;
-            if (TempPräfix % 8 == 0)
-                Temp++;
             return new Tuple<int, int>((int)Math.Floor(Temp), TempPräfix % 8);
         }
         public static int GiveValueOfBit(int Host)
@@ -64,6 +64,41 @@
             }
             return count;
         }
+        public static Tuple<int[], int> NetworkJump(Tuple<string, int> NameHostFromNetwork, int[] NullNet)
+        {
+            //Ermittelt das Neue Netzwerk und gibt es als Tuple zurück
+            int[] NextNet = new LinkedList<int>(NullNet).ToArray();
+            int TempPräfix = 32 - GetBitToAdress(NameHostFromNetwork.Item2 + 2);
+            int TargetOktett = GetTargetOktettAndBit(TempPräfix).Item1;
+            NextNet[TargetOktett] += GiveValueOfBit(NameHostFromNetwork.Item2);
+            if (CheckOktett(NextNet[TargetOktett]))
+            {
+                NextNet[TargetOktett - 1] += 1;
+                NextNet[TargetOktett] = 0;
+
+            }
+            return new Tuple<int[], int>(NextNet, TempPräfix);
+        }
+        public static List<Tuple<string, int>> NetworksSort(List<Tuple<string, int>> NetworkItem)
+        {
+            //Die Teilnetzwerke werden absteigend Sortiert
+            for (int i = 0; i < NetworkItem.Count; i++)
+            {
+                string TempString;
+                int TempInt;
+                for (int j = i; j < NetworkItem.Count; j++)
+                {
+                    TempString = NetworkItem[j].Item1;
+                    TempInt = NetworkItem[j].Item2;
+                    if (NetworkItem[i].Item2 < NetworkItem[j].Item2)
+                    {
+                        NetworkItem[j] = new Tuple<string, int>(NetworkItem[i].Item1, NetworkItem[i].Item2);
+                        NetworkItem[i] = new Tuple<string, int>(TempString, TempInt);
+                    }
+                }
+            }
+            return NetworkItem;
+        }
         static string ConvertAdressArrayToString(int[] Array)
         {
             //Setzt die vier Oktetten aus dem Array zu einer Netzadresse zusammen und gibt diese als String wieder aus
@@ -76,30 +111,21 @@
             }
             return TempString;
         }
-        public static List<Tuple<int[]>> GetBrodcast(List<Tuple<int[]>> NetAdress, List<Tuple<string, int>> NameHostFromNetwok)
+        public static int[] GetBrodcast(Tuple<int[], int> NetAdressPräfix)
         {
-            List<Tuple<int[]>> Output = new List<Tuple<int[]>>();
-            int[] Brodcast = new int[4];
-            for (int i = 0; i < NameHostFromNetwok.Count; i++)
+            int[] TempNextNet = NetAdressPräfix.Item1;
+            for(int i = TempNextNet.Length - 1; i >= 0; i--)
             {
-                int[] NextNetwork = NetAdress[i + 1].Item1;
-                bool TakeBit = true;
-                for (int j = 0; j < NextNetwork.Length; j++)
+                if (TempNextNet[i] == 0) 
+                    TempNextNet[i] = 255;
+                 if (TempNextNet[i] > 0)
                 {
-                    if (NextNetwork[j] == NetAdress[i].Item1[j])
-                        Brodcast[j] = NextNetwork[j];
-                    else if (NextNetwork[j] > NetAdress[i].Item1[j] && TakeBit)
-                    {
-                        TakeBit = false;
-                        Brodcast[j] = NextNetwork[j] - 1;
-                    }
 
-                    else
-                        Brodcast[j] = 255;
-                }
-                Output.Add(new Tuple<int[]>(Brodcast));
+                    TempNextNet[i] --;
+                    break;
+                }      
             }
-            return Output;
+            return TempNextNet;
         }
     }
 }

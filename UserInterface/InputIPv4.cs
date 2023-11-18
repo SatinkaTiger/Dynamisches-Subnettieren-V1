@@ -3,11 +3,8 @@
     using Dynamisches_Subnettieren_V1.IPv4;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
-    internal class UserInterfaceEingabe
+    internal class InputIPv4
     {
         static string Version = "V0.0.1";
 
@@ -132,7 +129,7 @@
                 }
                 if (Oktestts[0] == 0)
                     return new Tuple<bool, int[]>(true, Oktestts);
-            }  
+            }
             return new Tuple<bool, int[]>(false, Oktestts);
         }
         static void ErrorInputIp()

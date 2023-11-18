@@ -8,17 +8,13 @@
         static void Main(string[] args)
         {
             //User Eingaben
-            switch (UserInterfaceEingabe.GetIpModeFromUser())
+            switch (InputIPv4.GetIpModeFromUser())
             {
                 case 1:
                     DynamischIPv4.Start();
                     break;
                 case 2:
                     Console.WriteLine("IPv6 nicht implementiert qwq");
-                    Console.ReadLine();
-                    break;
-                default:
-                    Console.WriteLine("Fehlerhafte Eingabe\n\nWeiter mit beliebiger Taste");
                     Console.ReadLine();
                     break;
             }

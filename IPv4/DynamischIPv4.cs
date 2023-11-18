@@ -11,67 +11,39 @@
         public static int Präfix;
         public static List<Tuple<string, int>> SubNetNameAndHosts = new();
         public static List<Tuple<int[], int[], int>> SubNetAdress = new();
-        static List<Tuple<int[], int>> SubNetAdressNextPräfix = new();
         public static void Start()
         {
             //Usereingabe
-            int[] TempNetAdress = UserInterfaceEingabe.GetNetAdressFromUser();
-            int TempPräfix = UserInterfaceEingabe.GetPräfixFormUser();
+            int[] TempNetAdress = InputIPv4.GetNetAdressFromUser();
+            int TempPräfix = InputIPv4.GetPräfixFormUser();
             List<Tuple<string, int>> TempSubNetNameAndHosts = new();
-            while (true)
+            List<Tuple<int[], int>> TempSubNetAdressNextPräfix = new();
+            List<Tuple<int[], int[], int>> TempSubNetAdress = new();
+            bool Loop = true;
+            while (Loop)
             {
-                TempSubNetNameAndHosts.Add(UserInterfaceEingabe.GetSubnetDataFormUser(TempPräfix));
+                TempSubNetNameAndHosts.Add(InputIPv4.GetSubnetDataFormUser(TempPräfix));
                 Console.Write("Möchten Sie ein weiteres Teilnetzwerk eingeben? [j/n]: ");
                 if (!(Console.Read() == 'j'))
-                    break;
+                    Loop = InputIPv4.UserDialog(TempSubNetNameAndHosts);
             }
             //Verarbeitung
-            TempSubNetNameAndHosts = NetworksSort(TempSubNetNameAndHosts);
+            TempSubNetNameAndHosts = MethodenIPv4.NetworksSort(TempSubNetNameAndHosts);
             foreach (var Element in TempSubNetNameAndHosts)
-                SubNetAdressNextPräfix.Add(NetworkJump(Element, TempNetAdress));
+                TempSubNetAdressNextPräfix.Add(MethodenIPv4.NetworkJump(Element, TempNetAdress));
+            int[] NullNet = TempNetAdress;
+            int count = 0;
+            foreach (var Element in TempSubNetAdressNextPräfix)
+            {
+                int[] TempNullNet = new List<int>( Element.Item1).ToArray();
+                TempSubNetAdress.Add(new Tuple<int[], int[], int>(NullNet, MethodenIPv4.GetBrodcast(Element), Element.Item2));
+                NullNet = TempNullNet;
+                count++;
+            }
+            NetAdress = TempNetAdress;
             Präfix = TempPräfix;
-            for (int i = 0; i < SubNetAdressNextPräfix.Count; i++)
-            {
-                int[] NullNet = NetAdress;
-                if (i > 0)
-                    NullNet = SubNetAdressNextPräfix[i-1].Item1;
-
-            }
-        }
-        static List<Tuple<string, int>> NetworksSort(List<Tuple<string, int>> NetworkItem)
-        {
-            //Die Teilnetzwerke werden absteigend Sortiert
-            for (int i = 0; i < NetworkItem.Count; i++)
-            {
-                string TempString;
-                int TempInt;
-                for (int j = i; j < NetworkItem.Count; j++)
-                {
-                    TempString = NetworkItem[j].Item1;
-                    TempInt = NetworkItem[j].Item2;
-                    if (NetworkItem[i].Item2 < NetworkItem[j].Item2)
-                    {
-                        NetworkItem[j] = new Tuple<string, int>(NetworkItem[i].Item1, NetworkItem[i].Item2);
-                        NetworkItem[i] = new Tuple<string, int>(TempString, TempInt);
-                    }
-                }
-            }
-            return NetworkItem;
-        }
-        static Tuple<int[], int> NetworkJump(Tuple<string, int> NameHostFromNetwork, int[] NullNet)
-        {
-            //Ermittelt das Neue Netzwerk und gibt es als Tuple zurück
-            int[] NextNet = new LinkedList<int>(NullNet).ToArray();
-            int TempPräfix = 32 - MethodenIPv4.GetBitToAdress(NameHostFromNetwork.Item2 + 2);
-            int TargetOktett = MethodenIPv4.GetTargetOktettAndBit(TempPräfix).Item1;
-            NextNet[TargetOktett] += MethodenIPv4.GiveValueOfBit(NameHostFromNetwork.Item2);
-            if (MethodenIPv4.CheckOktett(NextNet[TargetOktett]))
-            {
-                NextNet[TargetOktett - 1] += 1;
-                NextNet[TargetOktett] = 0;
-
-            }
-            return new Tuple<int[], int>(NextNet, TempPräfix);
+            SubNetNameAndHosts = TempSubNetNameAndHosts;
+            SubNetAdress = TempSubNetAdress;
         }
     }
 }

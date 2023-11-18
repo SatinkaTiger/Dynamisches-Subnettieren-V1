@@ -7,8 +7,12 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    internal class UserInterfaceAusgabe
+    internal class OutputIPv4
     {
 
+        public static void StartIPv4()
+        {
+            
+        }
     }
 }
