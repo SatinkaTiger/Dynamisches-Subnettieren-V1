@@ -24,8 +24,13 @@
             {
                 TempSubNetNameAndHosts.Add(InputIPv4.GetSubnetDataFormUser(TempPräfix));
                 Console.Write("Möchten Sie ein weiteres Teilnetzwerk eingeben? [j/n]: ");
-                if (!(Console.Read() == 'j'))
-                    Loop = InputIPv4.UserDialog(TempSubNetNameAndHosts);
+                if (!(Console.ReadLine() == "j"))
+                {
+                    if (InputIPv4.UserDialog(TempSubNetNameAndHosts))
+                        break;
+                    else
+                        TempSubNetNameAndHosts.Clear();
+                } 
             }
             //Verarbeitung
             TempSubNetNameAndHosts = MethodenIPv4.NetworksSort(TempSubNetNameAndHosts);

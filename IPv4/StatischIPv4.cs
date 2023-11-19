@@ -8,5 +8,6 @@
 
     internal class StatischIPv4
     {
+
     }
 }

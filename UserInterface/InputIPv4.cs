@@ -20,11 +20,11 @@
             ProgarmHead();
             foreach (var item in NetworkItem)
                 Console.WriteLine($"{item.Item1}: {item.Item2} Host's");
-            Console.WriteLine("Bestätigen Sie die Richtigkeit der Eingabe\nIst Ihre Eingabe korrekt? [j/n]: ");
+            Console.Write("\nBestätigen Sie die Richtigkeit der Eingabe\nIst Ihre Eingabe korrekt? [j/n]: ");
             if (Console.ReadLine() == "j")
-                return true;
-            else
                 return false;
+            else
+                return true;
         }
 
         public static int GetPräfixFormUser()
