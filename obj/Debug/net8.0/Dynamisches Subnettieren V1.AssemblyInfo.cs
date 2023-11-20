@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Dynamisches Subnettieren V1")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e9bfd6b73a05cbad1888a1cc44ccf2d7b4d92630")]
 [assembly: System.Reflection.AssemblyProductAttribute("Dynamisches Subnettieren V1")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Dynamisches Subnettieren V1")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

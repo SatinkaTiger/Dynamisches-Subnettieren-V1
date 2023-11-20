@@ -70,13 +70,18 @@
             int[] NextNet = new LinkedList<int>(NullNet).ToArray();
             int TempPräfix = 32 - GetBitToAdress(NameHostFromNetwork.Item2 + 2);
             int TargetOktett = GetTargetOktettAndBit(TempPräfix).Item1;
-            NextNet[TargetOktett] += GiveValueOfBit(NameHostFromNetwork.Item2);
-            if (CheckOktett(NextNet[TargetOktett]))
+            NextNet[TargetOktett] += GiveValueOfBit(NameHostFromNetwork.Item2 +2);
+            for (int i = TargetOktett; i >= 0; i--)
             {
-                NextNet[TargetOktett - 1] += 1;
-                NextNet[TargetOktett] = 0;
-
+                if (CheckOktett(NextNet[TargetOktett]))
+                {
+                    NextNet[i - 1] += 1;
+                    NextNet[i] = 0;
+                }
+                else
+                    break;
             }
+            
             return new Tuple<int[], int>(NextNet, TempPräfix);
         }
         public static List<Tuple<string, int>> NetworksSort(List<Tuple<string, int>> NetworkItem)
@@ -99,7 +104,7 @@
             }
             return NetworkItem;
         }
-        static string ConvertAdressArrayToString(int[] Array)
+        public static string ConvertAdressArrayToString(int[] Array)
         {
             //Setzt die vier Oktetten aus dem Array zu einer Netzadresse zusammen und gibt diese als String wieder aus
             string TempString = "";

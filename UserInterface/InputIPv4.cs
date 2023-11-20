@@ -22,9 +22,9 @@
                 Console.WriteLine($"{item.Item1}: {item.Item2} Host's");
             Console.Write("\nBestätigen Sie die Richtigkeit der Eingabe\nIst Ihre Eingabe korrekt? [j/n]: ");
             if (Console.ReadLine() == "j")
-                return false;
-            else
                 return true;
+            else
+                return false;
         }
 
         public static int GetPräfixFormUser()
@@ -45,7 +45,7 @@
                 ErrorInputPräfix();
             }
         }
-        public static Tuple<string, int> GetSubnetDataFormUser(int Präfix)
+        public static Tuple<string, int> GetSubnetDataFormUser()
         {
             //Fragt den Nutzer nach dem Namen des Teilnetzwerks und der Anzahl der Hosts. Im Anschluss wird die Eingabe als Tupel Zurückgegeben
             string Name;
@@ -63,8 +63,7 @@
                 ProgarmHead();
                 Console.Write("Bitte geben sie die Anzahl der Hosts an: ");
                 if (int.TryParse(Console.ReadLine(), out Hosts))
-                    if (MethodenIPv4.GetBitToAdress(Hosts) + Präfix < 32)
-                        break;
+                    break;
                 ErrorInputPräfix(Name);
 
             }

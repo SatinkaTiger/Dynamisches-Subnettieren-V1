@@ -12,6 +12,7 @@
             {
                 case 1:
                     DynamischIPv4.Start();
+                    OutputIPv4.Start();
                     break;
                 case 2:
                     Console.WriteLine("IPv6 nicht implementiert qwq");
