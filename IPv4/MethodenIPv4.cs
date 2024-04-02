@@ -71,12 +71,15 @@
             int TempPräfix = 32 - GetBitToAdress(NameHostFromNetwork.Item2 + 2);
             int TargetOktett = GetTargetOktettAndBit(TempPräfix).Item1;
             NextNet[TargetOktett] += GiveValueOfBit(NameHostFromNetwork.Item2 +2);
-            for (int i = TargetOktett; i >= 0; i--)
+            int TempOktett = NextNet[TargetOktett];
+            for (int i = TargetOktett; i > 0; i--)
             {
-                if (CheckOktett(NextNet[TargetOktett]))
+                int Temp = NextNet[TargetOktett]; ;
+                if (CheckOktett(Temp))
                 {
                     NextNet[i - 1] += 1;
-                    NextNet[i] = 0;
+                    Temp -= GiveValueOfBit(NameHostFromNetwork.Item2 + 2);
+                    NextNet[i] = Temp;
                 }
                 else
                     break;
@@ -84,7 +87,7 @@
             
             return new Tuple<int[], int>(NextNet, TempPräfix);
         }
-        public static List<Tuple<string, int>> NetworksSort(List<Tuple<string, int>> NetworkItem)
+        public static void NetworksSort(List<Tuple<string, int>> NetworkItem)
         {
             //Die Teilnetzwerke werden absteigend Sortiert
             for (int i = 0; i < NetworkItem.Count; i++)
@@ -102,7 +105,6 @@
                     }
                 }
             }
-            return NetworkItem;
         }
         public static string ConvertAdressArrayToString(int[] Array)
         {
@@ -125,8 +127,7 @@
                     TempNextNet[i] = 255;
                  if (TempNextNet[i] > 0)
                 {
-
-                    TempNextNet[i] --;
+                    TempNextNet[i]--;
                     break;
                 }      
             }

@@ -24,6 +24,7 @@
                 Console.Write("Möchten Sie ein weiteres Teilnetzwerk eingeben? [j/n]: ");
                 if (!(Console.ReadLine() == "j"))
                 {
+                    MethodenIPv4.NetworksSort(TempSubNetNameAndHosts);
                     if (InputIPv4.UserDialog(TempSubNetNameAndHosts))
                         break;
                     else
@@ -31,20 +32,22 @@
                 } 
             }
             //Verarbeitung
-            TempSubNetNameAndHosts = MethodenIPv4.NetworksSort(TempSubNetNameAndHosts);
             int[] TempNullNet = TempNetAdress;
+            int count = 0;
             foreach (var Element in TempSubNetNameAndHosts)
-                TempSubNetAdressNextPräfix.Add(MethodenIPv4.NetworkJump(Element, TempNullNet));
-            int[] NullNet = TempNetAdress;
-            foreach (var Element in TempSubNetAdressNextPräfix)
             {
-                TempNullNet = new List<int>( Element.Item1).ToArray();
-                TempSubNetAdress.Add(new Tuple<int[], int[], int>(NullNet, MethodenIPv4.GetBrodcast(Element), Element.Item2));
-                NullNet = TempNullNet;
+                TempSubNetAdressNextPräfix.Add(MethodenIPv4.NetworkJump(Element, TempNullNet));
+                TempNullNet = new List<int>(TempSubNetAdressNextPräfix[count].Item1).ToArray();
+                count++;
+            }
+            for (int i = 0; i < TempSubNetNameAndHosts.Count; i++)
+            {
+                TempSubNetAdress.Add(new Tuple<int[], int[], int>(TempNullNet, MethodenIPv4.GetBrodcast(TempSubNetAdressNextPräfix[i]), TempSubNetAdressNextPräfix[i].Item2));
             }
             NetAdress = TempNetAdress;
             SubNetNameAndHosts = TempSubNetNameAndHosts;
             SubNetAdress = TempSubNetAdress;
+            
         }
     }
 }
